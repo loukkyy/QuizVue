@@ -1,31 +1,33 @@
 <template>
   <div>
     <h2>Score: {{ score }}</h2>
-    <QuestionCard v-if="!gameFinished" class="questionCard">
-      <template v-slot:questionCounter>
-        <h3>#{{ questionId + 1 }} / {{ questions.length }}</h3>
-      </template>
-      <template v-slot:question>
-        <h2 v-html="currentQuestion.question" class="question"/>
-      </template>
-      <template v-slot:answers>
-        <ul class="answer-list">
-          <li
-            v-for="choice in questions[questionId].choices"
-            :key="choice.id"
-            @click="selectAnswer(choice.id)"
-            v-html="choice.value"
-            :class="
-              isCorrectAnswer(choice.id) ? 'correctAnswer' : 'normalAnswer'
-            "
-          />
-        </ul>
-      </template>
-    </QuestionCard>
-    <div v-else>
-      <p class="message">Game Finished</p>
-      <button class="btn btn-big" @click="startNewGame">New Game</button>
-    </div>
+    <transition name="component-fade" mode="out-in" key="gameOn">
+      <QuestionCard v-if="!gameFinished" class="questionCard">
+        <template v-slot:questionCounter>
+          <h3>#{{ questionId + 1 }} / {{ questions.length }}</h3>
+        </template>
+        <template v-slot:question>
+          <h2 v-html="currentQuestion.question" class="question" />
+        </template>
+        <template v-slot:answers>
+          <ul class="answer-list">
+            <li
+              v-for="choice in questions[questionId].choices"
+              :key="choice.id"
+              @click="selectAnswer(choice.id)"
+              v-html="choice.value"
+              :class="
+                isCorrectAnswer(choice.id) ? 'correctAnswer' : 'normalAnswer'
+              "
+            />
+          </ul>
+        </template>
+      </QuestionCard>
+      <div v-else key="gameOver">
+        <p class="message">Game Finished</p>
+        <button class="btn btn-big" @click="startNewGame">New Game</button>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -128,6 +130,6 @@ export default {
   margin: 2rem;
 }
 .question {
-    margin: 1rem;
+  margin: 1rem;
 }
 </style>
